@@ -1,31 +1,47 @@
-import { space } from "postcss/lib/list";
-import { StyleSheet, Button, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import {
+  StyleSheet,
+  Button,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+  FlatList,
+} from "react-native";
+import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 export default function App() {
+  const [goal, setGoal] = useState([]);
+
+  function submitGoal(text) {
+    // setGoal((p) => [...p, inputText]);
+
+    //flat list will look for key properti
+    setGoal((p) => [
+      ...p,
+      {
+        text: text,
+        key: Math.random().toString(),
+      },
+    ]);
+  }
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Enter Goal"
-          style={styles.textInput}
-        ></TextInput>
-        <Button title="Add Goal"></Button>
-      </View>
+      <GoalInput onAddGoal={submitGoal}></GoalInput>
       <View style={styles.goalList}>
-        <Text>fff</Text>
+        <FlatList
+          data={goal}
+          renderItem={(itemData) => {
+            return <GoalItem text={itemData.item.text}></GoalItem>;
+          }}
+        />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-    alignItems: "center",
-  },
-
   goalList: {
     flex: 6,
   },
@@ -33,11 +49,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    width: "70%",
-    padding: 8,
   },
 });
